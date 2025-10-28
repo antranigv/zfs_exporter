@@ -5,7 +5,7 @@ import argparse
 import logging
 import libzfs
 from prometheus_client import start_http_server, Summary
-from prometheus_client.core import CounterMetricFamily, GaugeMetricFamily, SummaryMetricFamily, REGISTRY
+from prometheus_client.core import GaugeMetricFamily, REGISTRY
 from prometheus_client.registry import Collector
 
 LOG = logging.getLogger(__name__)
@@ -26,6 +26,10 @@ class ZFSCollector(Collector):
                 'usedbydataset_bytes': {
                     'desc': 'The amount of space used by this dataset itself, excluding descendants, in bytes',
                     'getter': lambda d: d.properties['usedbydataset'].parsed
+                    },
+                'available_bytes': {
+                    'desc': 'The amount of space available to the dataset and all its children, in bytes',
+                    'getter': lambda d: d.properties['available'].parsed
                     },
                 'atime_enabled': {
                     'desc': 'Whether access time updates are enabled (1 = on, 0 = off)',
@@ -91,8 +95,6 @@ class ZFSCollector(Collector):
                     datasets_metrics[d].add_metric([ds.pool.name, ds.name], meta['getter'](ds))
             else:
                 continue
-
-
 
         duration = time.time() - start
         self.duration_summary.observe(duration)
