@@ -1,0 +1,26 @@
+name: "py311-prometheus-zfs-exporter"
+origin: "filesystems/py-prometheus-zfs-exporter"
+version: "0.1.0"
+comment: "Prometheus exporter for ZFS statistics using py-libzfs"
+maintainer: "antranigv@freebsd.am"
+www: "https://github.com/antranigv/zfs-exporter"
+abi: "FreeBSD:14:*"
+arch: "freebsd:14:*"
+prefix: "/usr/local"
+desc: "This is a simple exporter for the Prometheus metrics for ZFS using\npy-libzfs."
+deps: {
+    py311-prometheus-client: {
+        origin: "net-mgmt/py-prometheus-client",
+    },
+    python311: {
+        origin: "lang/python311",
+    },
+    py311-libzfs: {
+        origin: "filesystems/py-libzfs",
+    }
+}
+categories: [
+    "filesystems",
+    "python",
+    "sysutils"
+]
