@@ -86,6 +86,8 @@ class ZFSCollector(Collector):
                 pools_metrics[p].add_metric([pool.name], pool.properties[p].parsed)
 
         for ds in datasets:
+            if any(ds.name == ex or ds.name.startswith(ex + '/') for ex in self.exclude):
+                continue
             depth = len(ds.name.split('/')) - 1
             if depth > self.limit:
                 continue
@@ -113,7 +115,6 @@ def main(port, limit, addr, exclude):
     start_http_server(port, addr=addr)
 
     while not stop:
-        print('still running...')
         time.sleep(1)
 
 
