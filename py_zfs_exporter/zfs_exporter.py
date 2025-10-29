@@ -87,14 +87,16 @@ class ZFSCollector(Collector):
 
         for ds in datasets:
             depth = len(ds.name.split('/')) - 1
-            if depth < self.limit:
+            if depth > self.limit:
+                continue
+            elif depth == self.limit:
+                datasets_metrics['used_bytes'].add_metric([ds.pool.name, ds.name], dsmetrics['used_bytes']['getter'](ds))
+            else:
                 if ds.type.name == 'VOLUME':
                     for vol, meta in volmetrics.items():
                         datasets_metrics[vol].add_metric([ds.pool.name, ds.name], meta['getter'](ds))
                 for d, meta in dsmetrics.items():
                     datasets_metrics[d].add_metric([ds.pool.name, ds.name], meta['getter'](ds))
-            else:
-                continue
 
         duration = time.time() - start
         self.duration_summary.observe(duration)
